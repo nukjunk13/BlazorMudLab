@@ -1,0 +1,29 @@
+@page "/users"
+@attribute [Authorize]
+
+@inherits BlazorMudLab.Pages.Users.BaseClass.UserListBase
+
+<MudTable Items="Users" Hover="true" Breakpoint="Breakpoint.Sm" SortLabel="Sort By" Sortable="true">
+    <ToolBarContent>
+        <UsersAdd OnAfterSave="@(() => SaveUser())" />
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh><MudTableSortLabel Enabled="@enabled" SortBy="(Func<User, object>)(x => x.Age)">Age</MudTableSortLabel></MudTh>
+        <MudTh>Email</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context?.Id</MudTd>
+        <MudTd DataLabel="Name">@context?.Name</MudTd>
+        <MudTd DataLabel="Age">@context?.Age</MudTd>
+        <MudTd DataLabel="Email">@context?.Email</MudTd>
+        <MudTd Style="text-align: right">
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Info" OnClick="@(() => NavigationManager.NavigateTo($"/users/{@context?.Id}"))" />
+            <DeleteButton OnAfterDelete="@(() => DeleteUser(context.Id))" />
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+<MudSwitch @bind-Value="enabled" Color="Color.Info">Enable sorting on the Age Column</MudSwitch>

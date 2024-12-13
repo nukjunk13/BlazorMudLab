@@ -1,0 +1,188 @@
+﻿@* @page "/encryption" *@
+@* @inject JweService JweService *@
+
+@* <h3>JWE Encryption and Decryption Example</h3> *@
+
+@* <MudTextField @bind-Value="inputData" Placeholder="Enter data to encrypt" Label="Data to Encrypt" /> *@
+@* <MudButton OnClick="EncryptData" Variant="Variant.Filled" Color="Color.Secondary">Encrypt Data</MudButton> *@
+
+@* <MudText Color="Color.Success"><strong>Encrypted Data:</strong></MudText> *@
+@* <p>@encryptedData</p> *@
+
+@* <MudTextField @bind-Value="encryptedInput" Placeholder="Enter encrypted data to decrypt" Label="Encrypted Data" /> *@
+@* <MudButton OnClick="DecryptData" Variant="Variant.Filled" Color="Color.Secondary">Decrypt Data</MudButton> *@
+
+@* <MudText Color="Color.Success"><strong>Decrypted Data:</strong></MudText> *@
+@* <p>@decryptedData</p> *@
+
+@* @code { *@
+@*     private string? inputData; *@
+@*     private string? encryptedData; *@
+@*     private string? decryptedData; *@
+@*     private string? encryptedInput; *@
+
+@*     private void EncryptData() *@
+@*     { *@
+@*         try *@
+@*         { *@
+@*             if (!string.IsNullOrEmpty(inputData)) *@
+@*             { *@
+@*                 encryptedData = JweService.Encode(inputData); *@
+@*                 Console.WriteLine($"Encrypted Data: {encryptedData}"); *@
+@*             } *@
+@*         } *@
+@*         catch (Exception ex) *@
+@*         { *@
+@*             Console.WriteLine($"Error during encryption: {ex.Message}"); *@
+@*         } *@
+@*     } *@
+
+@*     private void DecryptData() *@
+@*     { *@
+@*         try *@
+@*         { *@
+@*             if (!string.IsNullOrEmpty(encryptedInput)) *@
+@*             { *@
+@*                 decryptedData = JweService.Decode(encryptedInput); *@
+@*                 Console.WriteLine($"Decrypted Data: {decryptedData}"); *@
+@*             } *@
+@*         } *@
+@*         catch (Exception ex) *@
+@*         { *@
+@*             Console.WriteLine($"Error during decryption: {ex.Message}"); *@
+@*         } *@
+@*     } *@
+@* } *@
+
+@* ----------------------------------------------------------------------------------------------- *@
+            
+@* @page "/encryption" *@
+@* @inject IJSRuntime JSRuntime *@
+
+@* <PageTitle>JWE RS512</PageTitle> *@
+
+@* <h3>JWE RS512 Encode/Decode</h3> *@
+
+@* <MudTextField @bind-Value="Payload" Label="Payload (JSON)" Variant="Variant.Filled" FullWidth="true"></MudTextField> *@
+@* <MudButton OnClick="GenerateKeysAsync" Variant="Variant.Filled" Color="Color.Secondary">Generate Keys</MudButton> *@
+@* <MudButton OnClick="EncryptDataAsync" Variant="Variant.Filled" Color="Color.Secondary">Encrypt Data</MudButton> *@
+@* <MudButton OnClick="DecryptDataAsync" Variant="Variant.Filled" Color="Color.Secondary">Decrypt Data</MudButton> *@
+
+@* <h4>Public Key:</h4> *@
+@* <p>@publicKey</p> *@
+
+@* <h4>Private Key:</h4> *@
+@* <p>@privateKey</p> *@
+
+@* <h4>JWE Token:</h4> *@
+@* <p>@EncodedToken</p> *@
+
+@* <h4>Decrypted Data:</h4> *@
+@* <p>@DecryptedData</p> *@
+
+@* @code { *@
+@*     private string Payload { get; set; } *@
+@*     private string EncodedToken { get; set; } *@
+@*     private string DecryptedData { get; set; } *@
+@*     private string publicKey { get; set; } *@
+@*     private string privateKey { get; set; } *@
+
+@*     private async Task GenerateKeysAsync() *@
+@*     { *@
+@*         try *@
+@*         { *@
+@*             var keys = await JSRuntime.InvokeAsync<Dictionary<string, string>>("CryptoHelper.GenerateRSAKeys"); *@
+@*             publicKey = keys["publicKey"]; *@
+@*             privateKey = keys["privateKey"]; *@
+@*             Console.WriteLine($"Public Key: {publicKey}"); *@
+@*             Console.WriteLine($"Private Key: {privateKey}"); *@
+@*         } *@
+@*         catch (Exception ex) *@
+@*         { *@
+@*             Console.WriteLine($"Error generating keys: {ex.Message}"); *@
+@*         } *@
+@*     } *@
+
+@*     private async Task EncryptDataAsync() *@
+@*     { *@
+@*         try *@
+@*         { *@
+@*             if (!string.IsNullOrEmpty(Payload) && !string.IsNullOrEmpty(publicKey)) *@
+@*             { *@
+@*                 EncodedToken = await JSRuntime.InvokeAsync<string>("CryptoHelper.EncryptJWE", Payload, publicKey); *@
+@*                 Console.WriteLine($"Encrypted Data: {EncodedToken}"); *@
+@*             } *@
+@*         } *@
+@*         catch (Exception ex) *@
+@*         { *@
+@*             Console.WriteLine($"Error during encryption: {ex.Message}"); *@
+@*         } *@
+@*     } *@
+
+@*     private async Task DecryptDataAsync() *@
+@*     { *@
+@*         try *@
+@*         { *@
+@*             if (!string.IsNullOrEmpty(EncodedToken) && !string.IsNullOrEmpty(privateKey)) *@
+@*             { *@
+@*                 DecryptedData = await JSRuntime.InvokeAsync<string>("CryptoHelper.DecryptJWE", EncodedToken, privateKey); *@
+@*                 Console.WriteLine($"Decrypted Data: {DecryptedData}"); *@
+@*             } *@
+@*         } *@
+@*         catch (Exception ex) *@
+@*         { *@
+@*             Console.WriteLine($"Error during decryption: {ex.Message}"); *@
+@*         } *@
+@*     } *@
+@* } *@
+
+
+@page "/encryption"
+@inject IJSRuntime JSRuntime
+
+<h3>Encrypt/Decrypt Data</h3>
+
+<MudTextField @bind-Value="Plaintext" Label="Plaintext" Variant="Variant.Filled" FullWidth="true"></MudTextField>
+<MudButton OnClick="GenerateKeysAsync" Variant="Variant.Filled" Color="Color.Secondary">Generate Keys</MudButton>
+<MudButton OnClick="EncryptDataAsync" Variant="Variant.Filled" Color="Color.Secondary">Encrypt</MudButton>
+
+<h4>Generated Public Key:</h4>
+<p>@PublicKey</p>
+
+<h4>Generated Private Key:</h4>
+<p>@PrivateKey</p>
+
+<h4>Encrypted Text:</h4>
+<p>@EncryptedText</p>
+
+<MudTextField @bind-Value="EncryptedTextInput" Label="Encrypted Text Input" Variant="Variant.Filled" FullWidth="true"></MudTextField>
+<MudButton OnClick="DecryptDataAsync" Variant="Variant.Filled" Color="Color.Secondary">Decrypt</MudButton>
+
+<h4>Decrypted Text:</h4>
+<p>@DecryptedText</p>
+
+@code {
+    private string Plaintext { get; set; }
+    private string PublicKey { get; set; }
+    private string PrivateKey { get; set; }
+    private string EncryptedText { get; set; }
+    private string EncryptedTextInput { get; set; }
+    private string DecryptedText { get; set; }
+
+    private async Task GenerateKeysAsync()
+    {
+        var keys = await JSRuntime.InvokeAsync<Dictionary<string, string>>("CryptoHelper.generateRSAKeys");
+        PublicKey = keys["publicKey"];
+        PrivateKey = keys["privateKey"];
+    }
+
+    private async Task EncryptDataAsync()
+    {
+        EncryptedText = await JSRuntime.InvokeAsync<string>("CryptoHelper.encryptRSA", Plaintext, PublicKey);
+    }
+
+    private async Task DecryptDataAsync()
+    {
+        DecryptedText = await JSRuntime.InvokeAsync<string>("CryptoHelper.decryptRSA", EncryptedTextInput, PrivateKey);
+    }
+}

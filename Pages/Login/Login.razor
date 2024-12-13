@@ -1,0 +1,50 @@
+@inject UserService UserService
+@inject NavigationManager NavigationManager
+
+@page "/login"
+
+<div class="d-flex justify-center">
+    <MudImage ObjectFit="ObjectFit.Contain" Height="200" Width="400" Src="Images/Login/login-form-img.png" />
+</div>
+<div class="d-flex justify-center flex-column">
+    <MudText Typo="Typo.h6">
+        Please log in
+    </MudText>
+    <MudTextField Label="Username" @bind-Value="Username"/>
+    <MudTextField Label="Password" @bind-Value="Password" InputType="InputType.Password"/>
+    <MudButton Class="mt-4" Variant="Variant.Filled" Color="Color.Primary" OnClick="LoginUser">Login</MudButton>
+</div>
+
+
+@if (ErrorMessage != null)
+{
+    <MudAlert Severity="Severity.Error">@ErrorMessage</MudAlert>
+}
+
+@code {
+    private string Username = string.Empty;
+    private string Password = string.Empty;
+    private string? ErrorMessage;
+
+    private async Task LoginUser()
+    {
+        // ตรวจสอบค่าผู้ใช้และรหัสผ่าน
+        if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
+        {
+            ErrorMessage = "Username and password cannot be empty.";
+            return;
+        }
+
+        // เรียกใช้งาน LoginAsync
+        if (await UserService.LoginAsync(Username, Password))
+        {
+            // ถ้าล็อกอินสำเร็จให้ไปที่หน้า /users
+            NavigationManager.NavigateTo("/users");
+        }
+        else
+        {
+            // ถ้าล็อกอินไม่สำเร็จแสดงข้อความ
+            ErrorMessage = "Login failed. Please check your username and password.";
+        }
+    }
+}

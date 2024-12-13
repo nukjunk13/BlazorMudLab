@@ -1,0 +1,20 @@
+@page "/users/{Id}"
+@attribute [Authorize]
+
+@inherits BlazorMudLab.Pages.Users.BaseClass.UserDetailsBase
+
+<MudCard>
+    <MudCardContent>
+        <MudText Typo="Typo.h6">
+            Edit user
+        </MudText>
+    </MudCardContent>
+    
+    <MudCardContent>
+        <MudTextField Class="py-4" Label="Name" @bind-Value="User.Name" />
+        <MudNumericField Class="py-4" Label="Age" @bind-Value="User.Age" />
+        <MudTextField Class="py-4" Label="Email" @bind-Value="User.Email" />
+        <MudButton Color="Color.Primary" OnClick="EditUser">Save</MudButton>
+        <MudButton Color="Color.Error" OnClick="@(() => NavigationManager.NavigateTo($"/users"))">Cancel</MudButton>
+    </MudCardContent>
+</MudCard>

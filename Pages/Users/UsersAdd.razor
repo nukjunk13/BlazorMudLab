@@ -1,0 +1,24 @@
+﻿@inherits BlazorMudLab.Pages.Users.BaseClass.AddActionBase
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Open">Add User</MudButton>
+
+
+<MudDialog @bind-Visible="_visible" Options="_dialogOptions">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            Add user
+        </MudText>
+
+    </TitleContent>
+    <DialogContent>
+        <MudCardContent>
+            <MudTextField Class="py-4" Label="Name" @bind-Value="User.Name" />
+            <MudNumericField Class="py-4" Label="Age" @bind-Value="User.Age" />
+            <MudTextField Class="py-4" Label="Email" @bind-Value="User.Email" />
+        </MudCardContent>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Confirm">Save</MudButton>
+    </DialogActions>
+</MudDialog>
